@@ -87,73 +87,49 @@ class Flow():
         self.rockX += dir[0]
         self.rockY += dir[1]
 
-# f1 = Flow('test.txt')
-# f1.drop(2022)
-# assert f1.height() == 3068
+    def searchPeriod(self):
+        length = 1
+        numIterations = 20
+        maxNums = 100000
+        start = 5000
 
-# f2 = Flow('input.txt')
-# f2.drop(2022)
-# print(f2.height())
+        incrs = [self.incr() for _ in range(maxNums)]
 
-# f1 = Flow('test.txt')
-# i = 0
-# lastHeight = 0
-# sumHeights = 0
-# while i <= 2*10**6:
-#     i += 1
-#     sumHeights += f1.incr()
-#     if i % 35 == 0:
-#         print(i, sumHeights, sumHeights-lastHeight)
-#         lastHeight = sumHeights
+        while True:
+            s = sum(incrs[start:start+length])
+            index = start
+            i = numIterations
+            while i > 0:
+                index += length
+                if sum(incrs[index:index+length]) != s:
+                    break
+                i -= 1
+            if i == 0:
+                return length, s
+            length += 1
 
-# length = 1
-# numIterations = 20
-# maxNums = 100000
-# start = 40000
+    def largeHeight(self, target):
+        period, increment = self.searchPeriod()
+        numLoops = target // period - 2
+        initialRocks = target - numLoops * period
+        height = sum([f1.incr() for _ in range(initialRocks)]) + numLoops * increment
+        return height
 
-# incrs = [f2.incr() for _ in range(maxNums)]
-
-# while True:
-#     s = sum(incrs[start:start+length])
-#     index = start
-#     i = numIterations
-#     while i > 0:
-#         index += length
-#         if sum(incrs[index:index+length]) != s:
-#             break
-#         i -= 1
-#     if i == 0:
-#         print('Found', length)
-#     length += 1
-
-# Part 2
+# Part 1
 
 f1 = Flow('test.txt')
-
-# Prior code shows heights repeat every 35 rocks adding height of 53
-period = 35
-increment = 53
-
-target = 1000000000000
-
-# Expect 1514285714288 tall
-
-numLoops = target // period - 2
-initialRocks = target - numLoops * period
-height = sum([f1.incr() for _ in range(initialRocks)]) + numLoops * increment
-print(height)
+f1.drop(2022)
+assert f1.height() == 3068
 
 f2 = Flow('input.txt')
+f2.drop(2022)
+print(f2.height())
 
-# Prior code shows heights repeat every 35 rocks adding height of 53
-period = 1740
-increment = 2724
-
+# Part 2
 target = 1000000000000
 
-# Expect 1514285714288 tall
+f1 = Flow('test.txt')
+assert f1.largeHeight(target) == 1514285714286
 
-numLoops = target // period - 2
-initialRocks = target - numLoops * period
-height = sum([f2.incr() for _ in range(initialRocks)]) + numLoops * increment
-print(height)
+f2 = Flow('input.txt')
+print(f2.largeHeight(target))
