@@ -70,3 +70,4 @@ g2 = Grove('input.txt')
 g2.mix()
 print(g2.coordSum())
 # 3644 too low
+# 8401 too low
